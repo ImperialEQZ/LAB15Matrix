@@ -1,0 +1,3 @@
+C:/Users/Александр/CLionProjects/LAB15Matrix/cmake-build-debug/CMakeFiles/LAB15Matrix.dir
+C:/Users/Александр/CLionProjects/LAB15Matrix/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Александр/CLionProjects/LAB15Matrix/cmake-build-debug/CMakeFiles/rebuild_cache.dir
