@@ -1,0 +1,4 @@
+# ninja log v5
+5	265	7314500040264281	build.ninja	cefb9a8ad95775bb
+1	108	7314499253807557	CMakeFiles/LAB15Matrix.dir/main.c.obj	db7b62f030291dcb
+110	370	7314499256388141	LAB15Matrix.exe	ede548f7fdbe365
