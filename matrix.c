@@ -177,4 +177,63 @@ bool isSymmetricMatrix(matrix *m) {
 
     return 1;
 }
+//транспонирует квадратную матрицу m
+void transposeSquareMatrix(matrix *m) {
+    if (!isSquareMatrix(m))
+        return;
+
+    for (size_t i = 0; i < m->nRows - 1; i++) {
+        for (size_t j = i + 1; j < m->nRows; ++j ) {
+            swap(&m->values[i] [j], &m->values[j] [i]);
+        }
+    }
+}
+//транспонирует матрицу m
+void transposeMatrix(matrix *m) {
+    matrix result = getMemMatrix(m->nCols, m->nRows);
+
+    for (int col = 0; col < m->nCols; col++) {
+        for (int row = 0, j = col; row < m->nRows; row++) {
+            result.values[col] [row] = m->values[row] [j];
+        }
+    }
+
+    memcpy(m, &result, sizeof(matrix));
+}
+//возвращает позицию минимального элемента матрицы m
+position getMinValuePos(matrix m) {
+    position pos;
+
+    int min = INT_MAX;
+
+    for (size_t i = 0; i < m.nRows; i++) {
+        for (size_t j = 0; j < m.nCols; j++) {
+            if (m.values[i] [j] < min) {
+                min = m.values[i] [j];
+                pos.rowIndex = i + 1;
+                pos.colIndex = j + 1;
+            }
+        }
+    }
+
+    return pos;
+}
+//возвращает позицию максимального элемента матрицы m
+position getMaxValuePos(matrix m) {
+    position pos;
+
+    int max = INT_MIN;
+
+    for (size_t i = 0; i < m.nRows; i++) {
+        for (size_t j = 0; j < m.nCols; j++) {
+            if (m.values[i][j] > max) {
+                max = m.values[i][j];
+                pos.rowIndex = i + 1;
+                pos.colIndex = j + 1;
+            }
+        }
+    }
+
+    return pos;
+}
 
