@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <memory.h>
 typedef struct matrix {
     int **values; // элементы матрицы
     int nRows; // количество рядов
