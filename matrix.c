@@ -1,5 +1,4 @@
 #include "matrix.h"
-#include "array.h"
 
 void swap(void *a, void *b) {
     void *tmp = a;
@@ -92,19 +91,21 @@ void swapColumns(matrix m, int j1, int j2) {
 строк. */
 void insertionSortRowsMatrixByRowCriteria(matrix m, int (*criteria)(int*, int)) {
     int *values = malloc(sizeof(int) * m.nRows);
+
     for (size_t i = 0; i < m.nRows; i++)
         values[i] = criteria(m.values[i], m.nCols);
 
     for (size_t i = 1; i < m.nRows; i++) {
-        int key = values[i];
+
         int j = i - 1;
-        while (key < values[j] && j >= 0) {
+
+        while (values[i] < values[j] && j >= 0) {
             values[j + 1] = values[j];
             swapRows(m, j + 1, j);
             --j;
         }
 
-        values[j + 1] = key;
+        values[j + 1] = values[i];
     }
 }
 /*выполняет сортировку выбором столбцов
@@ -112,8 +113,10 @@ void insertionSortRowsMatrixByRowCriteria(matrix m, int (*criteria)(int*, int)) 
 */
 void selectionSortColsMatrixByColCriteria(matrix m, int (*criteria)(int*, int)) {
     int *values = malloc(sizeof(int) * m.nCols);
-    for ( size_t i = 0; i < m.nCols; i++) {
+
+    for (size_t i = 0; i < m.nCols; i++) {
         int *col = malloc( sizeof(int) * m.nRows);
+
         for (size_t j = 0; j < m.nRows; j++)
             col[j] = m.values[j][i];
 
@@ -121,9 +124,12 @@ void selectionSortColsMatrixByColCriteria(matrix m, int (*criteria)(int*, int)) 
     }
 
     for (int i = m.nCols - 1; i > 0; --i) {
+
         int max = getMaxElementIndexInArray(values, i + 1);
+
         if (max != i) {
-            swap( values + max, values + i);
+            swap(values + max, values + i);
+
             for (size_t j = 0; j < m.nRows; j++)
                 swap(&m.values[j] [max], &m.values[j][i]);
         }
@@ -236,4 +242,71 @@ position getMaxValuePos(matrix m) {
 
     return pos;
 }
+/*возвращает матрицу размера nRows на nCols, построенную из элементов массива a
+ * функция из методички */
+matrix createMatrixFromArray(const int *a, int nRows, int nCols) {
+    matrix m = getMemMatrix(nRows, nCols);
+    int k = 0;
+    for (int i = 0; i < nRows; i++)
+        for (int j = 0; j < nCols; j++)
+            m.values[i][j] = a[k++];
+    return m;
+}
+/*возвращает указатель на нулевую матрицу массива из nMatrices матриц, размещенных
+в динамической памяти, построенных из элементов массива a.
+Функция также из методички */
+matrix *createArrayOfMatrixFromArray(const int *values,
+                                     size_t nMatrices, size_t nRows, size_t nCols) {
 
+    matrix *ms = getMemArrayOfMatrices(nMatrices, nRows, nCols);
+
+    int l = 0;
+    for (size_t k = 0; k < nMatrices; k++)
+        for (size_t i = 0; i < nRows; i++)
+            for (size_t j = 0; j < nCols; j++)
+                ms[k].values[i][j] = values[l++];
+    return ms;
+}
+//подсчет количества value значений
+int countValues(const int *a, int n, int value) {
+    int count = 0;
+    for (size_t i = 0; i < n; i++) {
+        if (a[i] == value) {
+            ++count;
+        }
+    }
+
+    return count;
+}
+//возвращает количество строк в которых все элементы равны 0.
+int countZeroRows(matrix m) {
+    int result = 0;
+    for (size_t i = 0; i < m.nRows; i++) {
+        int count = countValues(m.values[i], m.nCols, 0);
+//Если количество найденных нулевых элементов = общему количеству столбцов в матрице, то увеличивается result
+        if (count == m.nCols)
+            ++result;
+    }
+
+    return result;
+}
+//Тест (с методички)
+void test_countZeroRows() {
+    matrix m = createMatrixFromArray(
+            (int[]) {
+                    1, 1, 0,
+                    0, 0, 0,
+                    0, 0, 1,
+                    0, 0, 0,
+                    0, 1, 1,
+            },
+            5, 3
+    );
+
+    assert(countZeroRows(m) == 2);
+    freeMemMatrix(&m);
+}
+
+int main() {
+    test_countZeroRows();
+}
