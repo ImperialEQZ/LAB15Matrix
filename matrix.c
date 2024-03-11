@@ -34,13 +34,23 @@ matrix *getMemArrayOfMatrices(int nMatrices, int nRows, int nCols) {
         ms[i] = getMemMatrix(nRows, nCols);
     return ms;
 }
-//освобождает память, выделенную под хранение матрицы m.
-void freeMemMatrix(matrix *m) {
+//освобождает память, выделенную под хранение матрицы m. (старая версия)
+/*void freeMemMatrix(matrix *m) {
     for (size_t i = 0; i < m->nRows; i++)
         free(m->values [i]);
 
     free(m->values );
 
+    m->values = NULL;
+}*/
+//освобождает память, выделенную под хранение матрицы m (новая)
+void freeMemMatrix(matrix *m) {
+    for (int i = 0; i < m->nRows; i++){
+        for (int j = 0; j < m->nCols; j++){
+            m->values[i] = NULL;
+            m->values[j] = NULL;
+        }
+    }
     m->values = NULL;
 }
 //освобождает память, выделенную под хранение массива ms из nMatrices матриц.
@@ -55,7 +65,7 @@ void inputMatrix(matrix *m) {
             scanf("%d", &m->values[i] [j]);
 }
 // ввод массива из nMatrices матриц, хранящейся по адресу ms.
-void inputMatrices(matrix *ms, int nMatrices){
+void inputMatrices(matrix *ms, int nMatrices) {
     for (size_t i = 0; i < nMatrices; i++)
         inputMatrix(&ms[i]);
 }
@@ -308,5 +318,14 @@ void test_countZeroRows() {
 }
 
 int main() {
-    test_countZeroRows();
+    //test_countZeroRows();
+    matrix a = getMemMatrix(2,2);
+
+    inputMatrix(&a);
+
+    swapColumns(a,0,1);
+
+    outputMatrix(a);
+
+    freeMemMatrix(&a);
 }
