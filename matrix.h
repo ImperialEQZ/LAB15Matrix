@@ -19,5 +19,4 @@ typedef struct position {
     int rowIndex;
     int colIndex;
 } position;
-
 #endif //LAB15MATRIX_MATRIX_H

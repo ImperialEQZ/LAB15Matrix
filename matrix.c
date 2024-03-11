@@ -18,6 +18,14 @@ size_t getMaxElementIndexInArray(const int a[], size_t n) {
 
     return maxIndex;
 }
+//(критерий) вычисление суммы для одномерного массива
+int getSum(int *a, int n) {
+    int sum = 0;
+    for (int i = 0; i < n; i++) {
+        sum += a[i];
+    }
+    return sum;
+}
 
 //размещает в динамической памяти матрицу размером nRows на nCols. Возвращает матрицу.
 matrix getMemMatrix(int nRows, int nCols) {
@@ -34,16 +42,7 @@ matrix *getMemArrayOfMatrices(int nMatrices, int nRows, int nCols) {
         ms[i] = getMemMatrix(nRows, nCols);
     return ms;
 }
-//освобождает память, выделенную под хранение матрицы m. (старая версия)
-/*void freeMemMatrix(matrix *m) {
-    for (size_t i = 0; i < m->nRows; i++)
-        free(m->values [i]);
-
-    free(m->values );
-
-    m->values = NULL;
-}*/
-//освобождает память, выделенную под хранение матрицы m (новая)
+//освобождает память, выделенную под хранение матрицы m
 void freeMemMatrix(matrix *m) {
     for (int i = 0; i < m->nRows; i++){
         for (int j = 0; j < m->nCols; j++){
@@ -88,14 +87,16 @@ void swapRows(matrix m, int i1, int i2) {
     memcpy(&m.values[i2], &imatrix, sizeof(int*));
 }
 //обмен колонок с порядковыми номерами j1 и j2 в матрице m.
-void swapColumns(matrix m, int j1, int j2) {
-    for (size_t i = 0; i < m.nRows; i++) {
-        int j1matrix = m.values[i] [j1];
+void swapColumns(matrix *m, int j1, int j2) {
+    assert(j1 < m->nCols || j2 < m->nCols);
 
-        memcpy(&m.values[i] [j1], &m.values[i] [j2], sizeof(int*));
-        memcpy(&m.values[i] [j2], &j1matrix, sizeof(int*));
+    for (int i = 0; i < m->nRows; ++i) {
+        int temp = m->values[i][j1];
+        m->values[i][j1] = m->values[i][j2];
+        m->values[i][j2] = temp;
     }
 }
+
 /* выполняет сортировку вставками строк
 матрицы m по неубыванию значения функции criteria применяемой для
 строк. */
@@ -121,30 +122,32 @@ void insertionSortRowsMatrixByRowCriteria(matrix m, int (*criteria)(int*, int)) 
 /*выполняет сортировку выбором столбцов
 матрицы m по неубыванию значения функции criteria применяемой для столбцов
 */
-void selectionSortColsMatrixByColCriteria(matrix m, int (*criteria)(int*, int)) {
-    int *values = malloc(sizeof(int) * m.nCols);
+void selectionSortColsMatrixByColCriteria(matrix *m, int (*criteria)(int *, int)) {
+    int temp[m->nCols];
+    for (int i = 0; i < m->nCols; ++i) {
+        int temp_column[m->nRows];
+        for (int j = 0; j < m->nRows; ++j)
+            temp_column[j] = m->values[j][i];
 
-    for (size_t i = 0; i < m.nCols; i++) {
-        int *col = malloc( sizeof(int) * m.nRows);
 
-        for (size_t j = 0; j < m.nRows; j++)
-            col[j] = m.values[j][i];
-
-        values[i] = criteria(col, m.nRows);
+        int result = criteria(temp_column, m->nCols);
+        temp[i] = result;
     }
 
-    for (int i = m.nCols - 1; i > 0; --i) {
+    int min_pos, temp_pos;
+    for (int i = 0; i < m->nCols; i++) {
+        min_pos = i;
+        for (int j = i + 1; j < m->nCols; j++)
+            if (temp[min_pos] > temp[j])
+                min_pos = j;
+        temp_pos = temp[min_pos];
+        temp[min_pos] = temp[i];
+        temp[i] = temp_pos;
 
-        int max = getMaxElementIndexInArray(values, i + 1);
-
-        if (max != i) {
-            swap(values + max, values + i);
-
-            for (size_t j = 0; j < m.nRows; j++)
-                swap(&m.values[j] [max], &m.values[j][i]);
-        }
+        swapColumns(m, min_pos, i);
     }
 }
+
 /*возвращает ’истина’, если матрица m
 является квадратной, ложь – в противном случае */
 bool isSquareMatrix(matrix *m) {
@@ -152,15 +155,15 @@ bool isSquareMatrix(matrix *m) {
 }
 //возвращает ’истина’, если матрицы m1 и m2 равны, иначе - ложь
 bool areTwoMatricesEqual(matrix *m1, matrix *m2) {
-    if (m1->nCols != m2->nCols || m1->nRows != m2->nRows)
+    if (m1->nRows != m2->nRows || m1->nCols != m2->nCols)
         return 0;
-
-    for (size_t i = 0; i < m1->nRows; i++)
-        if (memcmp(m1->values[i], m2->values[i], sizeof(int) * m1->nCols))
+    for (int i = 0; i < m1->nRows; ++i) {
+        if (memcmp(m1->values[i], m2->values[i], sizeof(int) * m2->nCols) != 0)
             return 0;
-
+    }
     return 1;
 }
+
 //возвращает ’истина’, если матрица m является единичной, иначе - ложь
 bool isEMatrix(matrix *m) {
 //т.к Е матрица квадратная, то проверяем:
@@ -300,7 +303,7 @@ int countZeroRows(matrix m) {
 
     return result;
 }
-//Тест (с методички)
+//Тесты
 void test_countZeroRows() {
     matrix m = createMatrixFromArray(
             (int[]) {
@@ -317,15 +320,102 @@ void test_countZeroRows() {
     freeMemMatrix(&m);
 }
 
+void test_getMemMatrix() {
+    matrix m = getMemMatrix(2, 2);
+    assert(m.nCols == 2 && m.nRows == 2);
+    // проверка выделения памяти
+    assert(m.values != NULL);
+    freeMemMatrix(&m);
+
+    // проверка на других входных данных
+    m = getMemMatrix(2, 9);
+    assert(m.nCols == 9 && m.nRows == 2);
+    assert(m.values != NULL);
+
+    //освобождаем память
+    freeMemMatrix(&m);
+}
+
+void test_getMemArrayOfMatrices() {
+    matrix *ms = getMemArrayOfMatrices(2, 2, 2);
+    // проверка на данные о колоннах и столбцах
+    assert(ms->nCols == 2 && ms->nRows == 2);
+    //проверка выделения памяти
+    assert(ms != NULL);
+    freeMemMatrices(ms, 2);
+
+    ms = getMemArrayOfMatrices(9, 5, 2);
+    // проверка на данные о колоннах и столбцах
+    assert(ms->nCols == 2 && ms->nRows == 5);
+    // проверка выделения памяти
+    assert(ms != NULL);
+    freeMemMatrices(ms, 2);
+}
+
+void test_freeMemMatrix() {
+    // создаем и чистим массив
+    matrix m = getMemMatrix(2, 2);
+    freeMemMatrix(&m);
+    assert(m.values == NULL);
+
+    //проверка на других данных
+    m = getMemMatrix(3, 6);
+    freeMemMatrix(&m);
+    assert(m.values == NULL);
+}
+
+void test_swapRows() {
+    // исходная матрица
+    matrix m = createMatrixFromArray((int[])
+            {4, 5, 6,
+             1, 2, 3,},
+             2, 3);
+    // проверочная матрица
+    matrix exp_res = createMatrixFromArray((int[]) {
+                                                   1, 2, 3,
+                                                   4, 5, 6},
+                                           2, 3);
+    swapRows(m, 0, 1);
+
+    assert(areTwoMatricesEqual(&m, &exp_res));
+    freeMemMatrix(&m);
+    freeMemMatrix(&exp_res);
+}
+
+void test_swapColumns() {
+    // исходная матрица
+    matrix m = createMatrixFromArray((int[]) {4, 5, 6,
+                                              1, 2, 3,},
+                                     2, 3);
+    // проверочная матрица
+    matrix exp_res = createMatrixFromArray((int[]) {
+        5, 4, 6,
+        2, 1, 3,},
+        2, 3);
+
+    swapColumns(&m, 0, 1);
+
+    assert(areTwoMatricesEqual(&m, &exp_res));
+    freeMemMatrix(&m);
+    freeMemMatrix(&exp_res);
+}
+
+void test() {
+    //тесты взаимодействия с памятью
+    test_getMemMatrix();
+    test_getMemArrayOfMatrices();
+    test_freeMemMatrix();
+
+    //тест перераспределяющих функций
+    test_swapRows();
+    test_swapColumns();
+
+}
+
 int main() {
-    //test_countZeroRows();
-    matrix a = getMemMatrix(2,2);
 
-    inputMatrix(&a);
+    test_countZeroRows();
+    test();
 
-    swapColumns(a,0,1);
-
-    outputMatrix(a);
-
-    freeMemMatrix(&a);
+    return 0;
 }
