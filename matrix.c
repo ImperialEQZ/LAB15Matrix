@@ -1,23 +1,5 @@
 #include "matrix.h"
 
-void swap(void *a, void *b) {
-    void *tmp = a;
-    a = b;
-    b = tmp;
-}
-
-size_t getMaxElementIndexInArray(const int a[], size_t n) {
-
-    int maxIndex = 0;
-
-    for(size_t i = 1; i < n; i++){
-        if(a[i] > a[maxIndex]){
-            maxIndex = i;
-        }
-    }
-
-    return maxIndex;
-}
 //(критерий) вычисление суммы для одномерного массива
 int getSum(int *a, int n) {
     int sum = 0;
@@ -197,16 +179,22 @@ bool isSymmetricMatrix(matrix *m) {
     return 1;
 }
 //транспонирует квадратную матрицу m
+//через стандартный swap не получилось, переделаю:
 void transposeSquareMatrix(matrix *m) {
     if (!isSquareMatrix(m))
         return;
 
-    for (size_t i = 0; i < m->nRows - 1; i++) {
-        for (size_t j = i + 1; j < m->nRows; ++j ) {
-            swap(&m->values[i] [j], &m->values[j] [i]);
+    matrix temp = getMemMatrix(m->nRows, m->nCols);
+
+    for (int i = 0; i < m->nRows; i++) {
+        for (int j = 0; j < m->nCols; j++) {
+            temp.values[j][i] = m->values[i][j];
         }
     }
+
+    m->values = temp.values;
 }
+
 //транспонирует матрицу m
 void transposeMatrix(matrix *m) {
     matrix result = getMemMatrix(m->nCols, m->nRows);
@@ -303,7 +291,7 @@ int countZeroRows(matrix m) {
 
     return result;
 }
-//Тесты
+//Тесты функций
 void test_countZeroRows() {
     matrix m = createMatrixFromArray(
             (int[]) {
@@ -372,8 +360,8 @@ void test_swapRows() {
              2, 3);
     // проверочная матрица
     matrix exp_res = createMatrixFromArray((int[]) {
-                                                   1, 2, 3,
-                                                   4, 5, 6},
+        1, 2, 3,
+        4, 5, 6},
                                            2, 3);
     swapRows(m, 0, 1);
 
@@ -384,8 +372,9 @@ void test_swapRows() {
 
 void test_swapColumns() {
     // исходная матрица
-    matrix m = createMatrixFromArray((int[]) {4, 5, 6,
-                                              1, 2, 3,},
+    matrix m = createMatrixFromArray((int[]) {
+        4, 5, 6,
+        1, 2, 3,},
                                      2, 3);
     // проверочная матрица
     matrix exp_res = createMatrixFromArray((int[]) {
@@ -400,6 +389,181 @@ void test_swapColumns() {
     freeMemMatrix(&exp_res);
 }
 
+void test_insertionSortRowsMatrixByRowCriteria() {
+    //исходная матрица
+    matrix m = createMatrixFromArray((int[]) {
+        3, 3, 3,
+        1, 1, 1,},
+                                     2, 3);
+    //проверочная матрица
+    matrix exp_res = createMatrixFromArray((int[]) {
+        1, 1, 1,
+        3, 3, 3,},
+                                           2, 3);
+
+    insertionSortRowsMatrixByRowCriteria(m, getSum);
+
+    assert(areTwoMatricesEqual(&m, &exp_res));
+    freeMemMatrix(&m);
+    freeMemMatrix(&exp_res);
+}
+
+void test_selectionSortColsMatrixByColCriteria() {
+    // исходная матрица
+    matrix m = createMatrixFromArray((int[]) {
+        1, 3, 1,
+        1, 3, 1,},
+                                     2, 3);
+    // проверочная матрица
+    matrix exp_res = createMatrixFromArray((int[]) {
+        1, 1, 3,
+        1, 1, 3,},
+                                           2, 3);
+
+    selectionSortColsMatrixByColCriteria(&m, getSum);
+
+    assert(areTwoMatricesEqual(&m, &exp_res));
+    freeMemMatrix(&m);
+    freeMemMatrix(&exp_res);
+}
+
+void test_isSquareMatrix() {
+    //проверка квадратной матрицы
+    matrix m = getMemMatrix(4, 4);
+    assert(isSquareMatrix(&m));
+    freeMemMatrix(&m);
+
+    // проверка с не квадратной матрицей
+    m = getMemMatrix(5, 8);
+    assert(!isSquareMatrix(&m));
+    freeMemMatrix(&m);
+}
+
+void test_areTwoMatricesEqual() {
+    matrix m = createMatrixFromArray((int[]) {
+        5, 4, 3,
+
+        2, 1, 0,},
+                                     2, 3);
+
+    matrix exp_res = createMatrixFromArray((int[]) {
+        5, 4, 3,
+        2, 1, 0,},
+                                           2, 3);
+
+    //матрицы равны
+    assert(areTwoMatricesEqual(&m, &exp_res));
+    freeMemMatrix(&m);
+    freeMemMatrix(&exp_res);
+
+    m = createMatrixFromArray((int[]) {
+        1, 3, 1,
+        1, 3, 3,},
+                              2, 3);
+
+    exp_res = createMatrixFromArray((int[]) {
+        8, 6, 4,
+        2, 3, 3,},
+                                    2, 3);
+
+    //матрицы не равны
+    assert(!areTwoMatricesEqual(&m, &exp_res));
+    freeMemMatrix(&m);
+    freeMemMatrix(&exp_res);
+}
+
+void test_isEMatrix() {
+    matrix m = createMatrixFromArray((int[]) {
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1},
+                                     3, 3);
+    assert(isEMatrix(&m));
+
+    matrix m_1 = createMatrixFromArray((int[]) {
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0},
+                                      3, 3);
+    assert(isEMatrix(&m_1) == 0);
+}
+
+void test_isSymmetricMatrix() {
+    matrix m = createMatrixFromArray((int[]) {
+        1, 0, 0,
+        0, 1, 0,
+        0, 0, 1},
+                                     3, 3);
+    assert(isSymmetricMatrix(&m));
+
+    matrix m_1 = createMatrixFromArray((int[]) {
+        1, 0, 0,
+        0, 1, 0},
+                                      2, 3);
+    assert(isSymmetricMatrix(&m_1) == 0);
+}
+
+void test_transposeSquareMatrix() {
+    matrix m = createMatrixFromArray((int[]) {
+        1, 2, 3,
+        4, 5, 0,
+        -1, 3, 4},
+                                     3, 3);
+    matrix exp_res = createMatrixFromArray((int[]) {
+        1, 4, -1,
+        2, 5, 3,
+        3, 0, 4},
+                                           3, 3);
+
+    transposeSquareMatrix(&m);
+
+    assert(areTwoMatricesEqual(&m, &exp_res));
+    freeMemMatrix(&m);
+    freeMemMatrix(&exp_res);
+}
+
+void test_transposeMatrix() {
+    matrix m = createMatrixFromArray((int[]) {
+        1, 2, 3,
+        4, 5, 6,},
+                                     2, 3);
+    matrix exp_res = createMatrixFromArray((int[]) {
+        1, 4,2,
+        5,3, 6,},
+                                           3, 2);
+
+    transposeMatrix(&m);
+
+    assert(areTwoMatricesEqual(&m, &exp_res));
+    freeMemMatrix(&m);
+    freeMemMatrix(&exp_res);
+}
+
+void test_getMinValuePos() {
+    //нахождение минимума
+    matrix m = createMatrixFromArray((int[]) {
+        -1, 6, 3,
+        18, 7, 0,},
+                              2, 3);
+    position p = getMinValuePos(m);
+
+    assert(p.rowIndex == 1 && p.colIndex == 1);
+    freeMemMatrix(&m);
+}
+
+void test_getMaxValuePos() {
+    //нахождение максимума
+    matrix m = createMatrixFromArray((int[]) {
+        11, 10, 10,
+        4, 15, 12,},
+                              2, 3);
+    position p1 = getMaxValuePos(m);
+
+    assert(p1.rowIndex == 2 && p1.colIndex == 2);
+    freeMemMatrix(&m);
+}
+
+
 void test() {
     //тесты взаимодействия с памятью
     test_getMemMatrix();
@@ -410,11 +574,29 @@ void test() {
     test_swapRows();
     test_swapColumns();
 
+    //тест для упорядочивания строк и столбцов
+    test_insertionSortRowsMatrixByRowCriteria();
+    test_selectionSortColsMatrixByColCriteria();
+
+    //тест с методички
+    test_countZeroRows();
+
+    //тесты функций-предикаты
+    test_isSquareMatrix();
+    test_areTwoMatricesEqual();
+    test_isEMatrix();
+    test_isSymmetricMatrix();
+
+    //тесты функций преобразования матриц
+    test_transposeSquareMatrix();
+    test_transposeMatrix();
+
+    //тест функции для поиска минимального и макcимального элемента матрицы
+    test_getMinValuePos();
+    test_getMaxValuePos();
 }
 
 int main() {
-
-    test_countZeroRows();
     test();
 
     return 0;
