@@ -26,12 +26,12 @@ matrix *getMemArrayOfMatrices(int nMatrices, int nRows, int nCols) {
 }
 //освобождает память, выделенную под хранение матрицы m
 void freeMemMatrix(matrix *m) {
-    for (int i = 0; i < m->nRows; i++){
-        for (int j = 0; j < m->nCols; j++){
-            m->values[i] = NULL;
-            m->values[j] = NULL;
-        }
+    for (size_t i = 0; i < m->nRows; i++) {
+        free(m->values[i]);
     }
+
+    free(m->values);
+
     m->values = NULL;
 }
 //освобождает память, выделенную под хранение массива ms из nMatrices матриц.
