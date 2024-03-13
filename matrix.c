@@ -33,6 +33,8 @@ void freeMemMatrix(matrix *m) {
     free(m->values);
 
     m->values = NULL;
+    m->nCols = 0;
+    m->nRows = 0;
 }
 //освобождает память, выделенную под хранение массива ms из nMatrices матриц.
 void freeMemMatrices(matrix *ms, int nMatrices) {
