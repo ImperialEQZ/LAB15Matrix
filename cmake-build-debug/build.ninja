@@ -55,6 +55,12 @@ build CMakeFiles/LAB15Matrix.dir/matrix.c.obj: C_COMPILER__LAB15Matrix_unscanned
   OBJECT_DIR = CMakeFiles\LAB15Matrix.dir
   OBJECT_FILE_DIR = CMakeFiles\LAB15Matrix.dir
 
+build CMakeFiles/LAB15Matrix.dir/Lab_16_task.c.obj: C_COMPILER__LAB15Matrix_unscanned_Debug C$:/Users/Александр/CLionProjects/LAB15Matrix/Lab$ 16$ task.c || cmake_object_order_depends_target_LAB15Matrix
+  DEP_FILE = CMakeFiles\LAB15Matrix.dir\Lab_16_task.c.obj.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\LAB15Matrix.dir
+  OBJECT_FILE_DIR = CMakeFiles\LAB15Matrix.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target LAB15Matrix
@@ -63,7 +69,7 @@ build CMakeFiles/LAB15Matrix.dir/matrix.c.obj: C_COMPILER__LAB15Matrix_unscanned
 #############################################
 # Link the executable LAB15Matrix.exe
 
-build LAB15Matrix.exe: C_EXECUTABLE_LINKER__LAB15Matrix_Debug CMakeFiles/LAB15Matrix.dir/matrix.c.obj
+build LAB15Matrix.exe: C_EXECUTABLE_LINKER__LAB15Matrix_Debug CMakeFiles/LAB15Matrix.dir/matrix.c.obj CMakeFiles/LAB15Matrix.dir/Lab_16_task.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\LAB15Matrix.dir

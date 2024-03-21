@@ -4,4 +4,5 @@ project(LAB15Matrix C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(LAB15Matrix matrix.c
-        matrix.h)
+        matrix.h
+        "Lab 16 task.c")

@@ -64,11 +64,12 @@ void outputMatrices(matrix *ms, int nMatrices) {
         outputMatrix(ms[i]);
 }
 //обмен строк с порядковыми номерами i1 и i2 в матрице m.
-void swapRows(matrix m, int i1, int i2) {
-    int *imatrix = m.values[i1];
+void swapRows(matrix *m, int i1, int i2) {
+    assert(i1 < m->nRows || i2 < m->nRows);
 
-    memcpy(&m.values[i1], &m.values[i2], sizeof(int*));
-    memcpy(&m.values[i2], &imatrix, sizeof(int*));
+    int *temp = m->values[i1];
+    m->values[i1] = m->values[i2];
+    m->values[i2] = temp;
 }
 //обмен колонок с порядковыми номерами j1 и j2 в матрице m.
 void swapColumns(matrix *m, int j1, int j2) {
@@ -96,7 +97,7 @@ void insertionSortRowsMatrixByRowCriteria(matrix m, int (*criteria)(int*, int)) 
 
         while (values[i] < values[j] && j >= 0) {
             values[j + 1] = values[j];
-            swapRows(m, j + 1, j);
+            swapRows(&m, j + 1, j);
             --j;
         }
 
@@ -211,7 +212,7 @@ void transposeMatrix(matrix *m) {
 }
 //возвращает позицию минимального элемента матрицы m
 position getMinValuePos(matrix m) {
-    position pos;
+    position pos = {0,0};
 
     int min = INT_MAX;
 
@@ -219,8 +220,8 @@ position getMinValuePos(matrix m) {
         for (size_t j = 0; j < m.nCols; j++) {
             if (m.values[i] [j] < min) {
                 min = m.values[i] [j];
-                pos.rowIndex = i + 1;
-                pos.colIndex = j + 1;
+                pos.rowIndex = i;
+                pos.colIndex = j;
             }
         }
     }
@@ -229,7 +230,7 @@ position getMinValuePos(matrix m) {
 }
 //возвращает позицию максимального элемента матрицы m
 position getMaxValuePos(matrix m) {
-    position pos;
+    position pos = {0, 0};
 
     int max = INT_MIN;
 
@@ -237,8 +238,8 @@ position getMaxValuePos(matrix m) {
         for (size_t j = 0; j < m.nCols; j++) {
             if (m.values[i][j] > max) {
                 max = m.values[i][j];
-                pos.rowIndex = i + 1;
-                pos.colIndex = j + 1;
+                pos.rowIndex = i;
+                pos.colIndex = j;
             }
         }
     }
@@ -365,7 +366,7 @@ void test_swapRows() {
         1, 2, 3,
         4, 5, 6},
                                            2, 3);
-    swapRows(m, 0, 1);
+    swapRows(&m, 0, 1);
 
     assert(areTwoMatricesEqual(&m, &exp_res));
     freeMemMatrix(&m);
@@ -549,19 +550,19 @@ void test_getMinValuePos() {
                               2, 3);
     position p = getMinValuePos(m);
 
-    assert(p.rowIndex == 1 && p.colIndex == 1);
+    assert(p.rowIndex == 0 && p.colIndex == 0);
     freeMemMatrix(&m);
 }
 
 void test_getMaxValuePos() {
     //нахождение максимума
     matrix m = createMatrixFromArray((int[]) {
-        11, 10, 10,
+        110, 10, 10,
         4, 15, 12,},
                               2, 3);
     position p1 = getMaxValuePos(m);
 
-    assert(p1.rowIndex == 2 && p1.colIndex == 2);
+    assert(p1.rowIndex == 0 && p1.colIndex == 0);
     freeMemMatrix(&m);
 }
 
@@ -597,9 +598,7 @@ void test() {
     test_getMinValuePos();
     test_getMaxValuePos();
 }
-
-int main() {
+/*int main() {
     test();
-
-    return 0;
 }
+*/
