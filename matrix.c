@@ -85,23 +85,28 @@ void swapColumns(matrix *m, int j1, int j2) {
 /* выполняет сортировку вставками строк
 матрицы m по неубыванию значения функции criteria применяемой для
 строк. */
-void insertionSortRowsMatrixByRowCriteria(matrix m, int (*criteria)(int*, int)) {
-    int *values = malloc(sizeof(int) * m.nRows);
-
-    for (size_t i = 0; i < m.nRows; i++)
-        values[i] = criteria(m.values[i], m.nCols);
-
-    for (size_t i = 1; i < m.nRows; i++) {
-
-        int j = i - 1;
-
-        while (values[i] < values[j] && j >= 0) {
-            values[j + 1] = values[j];
-            swapRows(&m, j + 1, j);
-            --j;
+void insertionSortRowsMatrixByRowCriteria(matrix *m,
+                                          int (*criteria)(int *, int)) {
+    int temp[m->nRows];
+    int mem_num;
+    for (int i = 0; i < m->nRows; ++i) {
+        int res = criteria(m->values[i], m->nCols);
+        temp[i] = res;
+    }
+    int min_idx;
+    for (int j = 0; j < m->nRows; ++j) {
+        min_idx = j;
+        for (int i = j + 1; i < m->nRows; ++i) {
+            if (temp[i] < temp[min_idx]) {
+                min_idx = i;
+            }
         }
-
-        values[j + 1] = values[i];
+        if (min_idx != j) {
+            mem_num = temp[j];
+            temp[j] = temp[min_idx];
+            temp[min_idx] = mem_num;
+            swapRows(m, j, min_idx);
+        }
     }
 }
 /*выполняет сортировку выбором столбцов
@@ -404,7 +409,7 @@ void test_insertionSortRowsMatrixByRowCriteria() {
         3, 3, 3,},
                                            2, 3);
 
-    insertionSortRowsMatrixByRowCriteria(m, getSum);
+    insertionSortRowsMatrixByRowCriteria(&m, getSum);
 
     assert(areTwoMatricesEqual(&m, &exp_res));
     freeMemMatrix(&m);
