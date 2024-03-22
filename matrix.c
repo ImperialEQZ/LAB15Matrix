@@ -54,9 +54,12 @@ void inputMatrices(matrix *ms, int nMatrices) {
 }
 //вывод матрицы m.
 void outputMatrix(matrix m) {
-    for (size_t i = 0; i < m.nRows; i++)
-        for (size_t j = 0; j < m.nCols; j++)
-            printf("%d", m.values[i] [j]);
+    for (int i = 0; i < m.nRows; i++) {
+        for (int j = 0; j < m.nCols; j++) {
+            printf("%d\t", m.values[i][j]);
+        }
+        printf("\n");
+    }
 }
 //вывод массива из nMatrices матриц, хранящейся по адресу ms.
 void outputMatrices(matrix *ms, int nMatrices) {
@@ -112,29 +115,31 @@ void insertionSortRowsMatrixByRowCriteria(matrix *m,
 /*выполняет сортировку выбором столбцов
 матрицы m по неубыванию значения функции criteria применяемой для столбцов
 */
-void selectionSortColsMatrixByColCriteria(matrix *m, int (*criteria)(int *, int)) {
-    int temp[m->nCols];
-    for (int i = 0; i < m->nCols; ++i) {
-        int temp_column[m->nRows];
-        for (int j = 0; j < m->nRows; ++j)
-            temp_column[j] = m->values[j][i];
+void selectionSortColsMatrixByColCriteria(matrix m, int (*criteria)(int*, int)) {
+    int n = m.nRows;
+    int p = m.nCols;
 
+    for (int i = 0; i < p - 1; i++) {
+        int min_index = i;
+        for (int j = i + 1; j < p; j++) {
+            int col1[n], col2[n];
+            for (int k = 0; k < n; k++) {
+                col1[k] = m.values[k][min_index];
+                col2[k] = m.values[k][j];
+            }
 
-        int result = criteria(temp_column, m->nCols);
-        temp[i] = result;
-    }
+            if (criteria(col1, n) > criteria(col2, n)) {
+                min_index = j;
+            }
+        }
 
-    int min_pos, temp_pos;
-    for (int i = 0; i < m->nCols; i++) {
-        min_pos = i;
-        for (int j = i + 1; j < m->nCols; j++)
-            if (temp[min_pos] > temp[j])
-                min_pos = j;
-        temp_pos = temp[min_pos];
-        temp[min_pos] = temp[i];
-        temp[i] = temp_pos;
-
-        swapColumns(m, min_pos, i);
+        if (min_index != i) {
+            for (int k = 0; k < n; k++) {
+                int temp = m.values[k][i];
+                m.values[k][i] = m.values[k][min_index];
+                m.values[k][min_index] = temp;
+            }
+        }
     }
 }
 
@@ -428,7 +433,7 @@ void test_selectionSortColsMatrixByColCriteria() {
         1, 1, 3,},
                                            2, 3);
 
-    selectionSortColsMatrixByColCriteria(&m, getSum);
+    selectionSortColsMatrixByColCriteria(m, getSum);
 
     assert(areTwoMatricesEqual(&m, &exp_res));
     freeMemMatrix(&m);
