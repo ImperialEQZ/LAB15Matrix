@@ -104,21 +104,68 @@ void test_Lab16_task3() {
     freeMemMatrix(&m_test);
 }
 
+matrix mulMatrices(matrix m1, matrix m2) {
+
+    if(m1.nRows * m1.nCols == m2.nRows * m2.nCols){
+    matrix result = getMemMatrix(m1.nRows, m2.nCols);
+    for (int i = 0; i < m1.nRows; i++) {
+        for (int j = 0; j < m2.nCols; j++) {
+            result.values[i][j] = 0;
+            for (int k = 0; k < m1.nCols; k++) {
+                result.values[i][j] += m1.values[i][k] * m2.values[k][j];
+                }
+            }
+        }
+
+        return result;
+    }
+}
+
+void getSquareOfMatrixIfSymmetric(matrix *m) {
+    if(isSymmetricMatrix(m)){
+    matrix temp = mulMatrices(*m, *m);
+    freeMemMatrix(m);
+    *m = temp;
+    }
+}
+
+void Lab16_task4(matrix *m) {
+    getSquareOfMatrixIfSymmetric(m);
+}
+void test_Lab16_task4() {
+    matrix m = createMatrixFromArray((int[]) {
+        3, -2, 1,
+        -2, 0, -4,
+        1, -4, 2,},
+                                     3, 3);
+    matrix m_test = createMatrixFromArray((int[]) {
+        14,      -10,     13,
+        -10,     20,      -10,
+        13,      -10,     21
+                                          },
+                                          3, 3);
+    Lab16_task4(&m);
+    assert(areTwoMatricesEqual(&m, &m_test));
+    freeMemMatrix(&m);
+    freeMemMatrix(&m_test);
+}
+
 int main() {
     //test_Lab16_task1();
     //test_Lab16_task2();
-    test_Lab16_task3();
+    //test_Lab16_task3();
+    test_Lab16_task4();
 }
 /*int main() {
-    int data[] = {3, 5, 2, 4, 3, 3,
-                  2, 5, 1, 8, 2, 7,
-                  6, 1, 4, 4, 8, 3};
+    int data[] = {3, -2, 1,
+                  -2, 0, -4,
+                  1, -4, 2,};
 
 
-    matrix m = createMatrixFromArray(data, 3, 6);
+    matrix m = createMatrixFromArray(data, 3, 3);
     outputMatrix(m);
 
-    selectionSortColsMatrixByColCriteria(m, getMin);
+    Lab16_task4(&m);
 
     outputMatrix(m);
     freeMemMatrix(&m);
