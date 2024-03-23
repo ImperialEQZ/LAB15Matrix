@@ -229,30 +229,58 @@ void test_Lab16_task6() {
     freeMemMatrix(&m2);
 }
 
+int max(int a, int b){
+    return a > b ? a : b;
+}
+
+long long findSumOfMaxesOfPseudoDiagonal(matrix m) {
+    long long max_sum_S = 0;
+    int max_number = 0;
+    for (int i = 1; i < m.nCols; i++) {
+        int i_rows = 0;
+        int i_cols = i;
+        max_number = m.values[i_rows][i_cols];
+        while (i_cols < m.nCols && i_rows < m.nRows) {
+            max_number = max(max_number, m.values[i_rows] [i_cols]);
+            i_rows++;
+            i_cols++;
+        }
+        max_sum_S += max_number;
+    }
+    for (int i = 1; i < m.nRows; i++) {
+        int i_row = i;
+        int i_col = 0;
+        max_number = m.values[i_row][i_col];
+        while (i_col < m.nRows && i_row < m.nRows) {
+            max_number = max(max_number, m.values[i_row][i_col]);
+            i_row++;
+            i_col++;
+        }
+        max_sum_S += max_number;
+    }
+    return max_sum_S;
+}
+
+long long Lab16_task7(matrix m) {
+    return findSumOfMaxesOfPseudoDiagonal(m);
+}
+
+void test_Lab16_task7() {
+//Пример из пособия
+    matrix m = createMatrixFromArray((int[]) {
+        3, 2, 5, 4,
+        1, 3, 6, 3,
+        3, 2, 1, 2},
+                                     3, 4);
+    assert(Lab16_task7(m) == 20);
+    freeMemMatrix(&m);
+}
 int main() {
     //test_Lab16_task1();
     //test_Lab16_task2();
     //test_Lab16_task3();
     //test_Lab16_task4();
     //test_Lab16_task5();
-    test_Lab16_task6();
+    //test_Lab16_task6();
+    test_Lab16_task7();
 }
-/*int main() {
-    int data1[] = {3,	4,
-                  5,	7,};
-
-    int data2[] = {7, -4,
-                   -5,3};
-
-
-    matrix m1 = createMatrixFromArray(data1, 2, 2);
-    matrix m2 = createMatrixFromArray(data2, 2, 2);
-
-
-    assert(Lab16_task6(m1, m2));
-
-    freeMemMatrix(&m1);
-    freeMemMatrix(&m2);
-
-    return 0;
-}*/
