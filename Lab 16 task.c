@@ -275,6 +275,66 @@ void test_Lab16_task7() {
     assert(Lab16_task7(m) == 20);
     freeMemMatrix(&m);
 }
+
+int getMinInArea(matrix m) {
+    position max_pos = getMaxValuePos(m);
+
+    int min = m.values[max_pos.rowIndex][max_pos.colIndex];
+    int row = max_pos.rowIndex - 1;
+    int elementary_col;
+
+    if(max_pos.colIndex - 1 >= 0) {
+        elementary_col = max_pos.colIndex - 1;
+    } else {
+        elementary_col = 0;
+    }
+
+    int col = elementary_col;
+    int col_final;
+
+    if(max_pos.colIndex + 1 <= m.nCols - 1) {
+        col_final = max_pos.colIndex + 1;
+    } else {
+        col_final = m.nCols - 1;
+    }
+
+    for (int i = row; i >= 0; i--) {
+        for (int j = col; j <= col_final; j++)
+            min = min < m.values[i][j] ? min : m.values[i][j];
+
+        if(elementary_col - 1 >= 0) {
+            elementary_col = elementary_col - 1;
+        } else {
+            elementary_col = 0;
+        }
+
+        col = elementary_col;
+
+        if(col_final + 1 <= m.nCols - 1) {
+            col_final = col_final + 1;
+        } else {
+            col_final = m.nCols - 1;
+        }
+    }
+
+    return min;
+}
+
+int Lab16_task8(matrix m) {
+    return getMinInArea(m);
+}
+
+void test_Lab16_task8() {
+//Пример из пособия
+    matrix m = createMatrixFromArray((int[]) {
+        6, 8, 9, 2,
+        7, 12, 3, 4,
+        10, 11, 5, 1},
+                                 3, 4);
+    assert(Lab16_task8(m) == 6);
+    freeMemMatrix(&m);
+}
+
 int main() {
     //test_Lab16_task1();
     //test_Lab16_task2();
@@ -282,5 +342,6 @@ int main() {
     //test_Lab16_task4();
     //test_Lab16_task5();
     //test_Lab16_task6();
-    test_Lab16_task7();
+    //test_Lab16_task7();
+    test_Lab16_task8();
 }
