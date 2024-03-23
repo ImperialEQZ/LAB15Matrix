@@ -1,7 +1,7 @@
 #include "matrix.h"
 
 //(критерий) вычисление суммы для одномерного массива
-int getSum(int *a, int n) {
+long long getSum(int *a, int n) {
     int sum = 0;
     for (int i = 0; i < n; i++) {
         sum += a[i];

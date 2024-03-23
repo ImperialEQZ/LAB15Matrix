@@ -150,25 +150,75 @@ void test_Lab16_task4() {
     freeMemMatrix(&m_test);
 }
 
-int main() {
+bool isUnique(long long *a, int n) {
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            if (a[i] == a[j] && i != j)
+                return false;
+        }
+    }
+    return true;
+}
+//getSum из библиотеки
+/*long long getSum(int *a, int n) {
+    int sum = 0;
+    for (int i = 0; i < n; i++) {
+        sum += a[i];
+    }
+    return sum;
+}*/
+
+void transposeIfMatrixHasNotEqualSumOfRows(matrix *m) {
+    long long temp_sum[m->nRows];
+    for (int i = 0; i < m->nRows; i++) {
+        temp_sum[i] = getSum(m->values[i], m->nCols);
+    }
+
+    if (isUnique(temp_sum, m->nRows))
+        transposeSquareMatrix(m);
+}
+
+void Lab16_task5(matrix *m) {
+    transposeIfMatrixHasNotEqualSumOfRows(m);
+}
+void test_Lab16_task5() {
+    matrix m = createMatrixFromArray((int[]) {
+        10,	9,	8,
+        7,	6, 5,
+        4,	3,	2},
+                                     3, 3);
+    matrix m_test = createMatrixFromArray((int[]) {
+        10,	7,	4,
+        9,	6,	3,
+        8,	5,	2},
+                                          3, 3);
+    Lab16_task5(&m);
+
+    assert(areTwoMatricesEqual(&m, &m_test));
+
+    freeMemMatrix(&m);
+    freeMemMatrix(&m_test);
+}
+/*int main() {
     //test_Lab16_task1();
     //test_Lab16_task2();
     //test_Lab16_task3();
-    test_Lab16_task4();
-}
-/*int main() {
-    int data[] = {3, -2, 1,
-                  -2, 0, -4,
-                  1, -4, 2,};
+    //test_Lab16_task4();
+    test_Lab16_task5();
+}*/
+int main() {
+    int data[] = {10,	9,	8,
+                  7,	6, 5,
+                  4,	3,	2,};
 
 
     matrix m = createMatrixFromArray(data, 3, 3);
     outputMatrix(m);
 
-    Lab16_task4(&m);
+    Lab16_task5(&m);
 
     outputMatrix(m);
     freeMemMatrix(&m);
 
     return 0;
-}*/
+}
