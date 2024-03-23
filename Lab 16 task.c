@@ -199,26 +199,60 @@ void test_Lab16_task5() {
     freeMemMatrix(&m);
     freeMemMatrix(&m_test);
 }
-/*int main() {
+
+bool isMutuallyInverseMatrices(matrix m1, matrix m2) {
+    if (m1.nCols != m2.nCols || m1.nRows != m2.nRows)
+        return false;
+    else {
+        matrix mul_m = mulMatrices(m1, m2);
+        return isEMatrix(&mul_m);
+    }
+}
+
+bool Lab16_task6(matrix m1, matrix m2) {
+    return isMutuallyInverseMatrices(m1, m2);
+}
+void test_Lab16_task6() {
+    int data1[] = {3,	4,
+                  5,	7,};
+
+    int data2[] = {7, -4,
+                   -5,3};
+
+
+    matrix m1 = createMatrixFromArray(data1, 2, 2);
+    matrix m2 = createMatrixFromArray(data2, 2, 2);
+
+    assert(Lab16_task6(m1, m2));
+
+    freeMemMatrix(&m1);
+    freeMemMatrix(&m2);
+}
+
+int main() {
     //test_Lab16_task1();
     //test_Lab16_task2();
     //test_Lab16_task3();
     //test_Lab16_task4();
-    test_Lab16_task5();
-}*/
-int main() {
-    int data[] = {10,	9,	8,
-                  7,	6, 5,
-                  4,	3,	2,};
+    //test_Lab16_task5();
+    test_Lab16_task6();
+}
+/*int main() {
+    int data1[] = {3,	4,
+                  5,	7,};
+
+    int data2[] = {7, -4,
+                   -5,3};
 
 
-    matrix m = createMatrixFromArray(data, 3, 3);
-    outputMatrix(m);
+    matrix m1 = createMatrixFromArray(data1, 2, 2);
+    matrix m2 = createMatrixFromArray(data2, 2, 2);
 
-    Lab16_task5(&m);
 
-    outputMatrix(m);
-    freeMemMatrix(&m);
+    assert(Lab16_task6(m1, m2));
+
+    freeMemMatrix(&m1);
+    freeMemMatrix(&m2);
 
     return 0;
-}
+}*/
