@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include "matrix.c"
+#include <math.h>
 
 /*Дана квадратная матрица, все элементы которой различны. Поменять местами
 строки, в которых находятся максимальный и минимальный элементы */
@@ -335,6 +336,68 @@ void test_Lab16_task8() {
     freeMemMatrix(&m);
 }
 
+float getDistance(int *a, int n) {
+
+    float dist = 0;
+    for (int i = 0; i < n; i++) {
+        dist += a[i] * a[i];
+    }
+    dist = sqrt(dist);
+    return dist;
+}
+
+void insertionSortRowsMatrixByRowCriteriaF(matrix *m,
+                                           float (*criteria)(int *, int)) {
+    float temp[m->nRows];
+    float mem_num;
+    for (int i = 0; i < m->nRows; i++) {
+        float res = criteria(m->values[i], m->nCols);
+        temp[i] = res;
+    }
+    int min_id;
+    for (int j = 0; j < m->nRows; j++) {
+        min_id = j;
+        for (int i = j + 1; i < m->nRows; i++) {
+            if (temp[i] < temp[min_id]) {
+                min_id = i;
+            }
+        }
+        if (min_id != j) {
+            mem_num = temp[j];
+            temp[j] = temp[min_id];
+            temp[min_id] = mem_num;
+            swapRows(m, j, min_id);
+        }
+    }
+}
+
+void sortByDistances(matrix *m) {
+    insertionSortRowsMatrixByRowCriteriaF(m, getDistance);
+}
+
+
+void Lab16_task9(matrix *m) {
+    sortByDistances(m);
+}
+void test_Lab16_task9() {
+    matrix m = createMatrixFromArray((int[]) {
+        5, -20,
+        10, -10,
+        -8, -25},
+                                     3, 2);
+    matrix m_test = createMatrixFromArray((int[]) {
+        10, -10,
+        5, -20,
+        -8, -25},
+                                          3, 2);
+    Lab16_task9(&m);
+
+    assert(areTwoMatricesEqual(&m, &m_test));
+
+    freeMemMatrix(&m);
+    freeMemMatrix(&m_test);
+}
+
 int main() {
     //test_Lab16_task1();
     //test_Lab16_task2();
@@ -343,5 +406,6 @@ int main() {
     //test_Lab16_task5();
     //test_Lab16_task6();
     //test_Lab16_task7();
-    test_Lab16_task8();
+    //test_Lab16_task8();
+    test_Lab16_task9();
 }
