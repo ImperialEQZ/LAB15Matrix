@@ -104,7 +104,7 @@ void test_Lab16_task3() {
     freeMemMatrix(&m);
     freeMemMatrix(&m_test);
 }
-
+//Задание 4 (1)
 matrix mulMatrices(matrix m1, matrix m2) {
 
     if(m1.nRows * m1.nCols == m2.nRows * m2.nCols){
@@ -121,7 +121,7 @@ matrix mulMatrices(matrix m1, matrix m2) {
         return result;
     }
 }
-
+//Задание 4 (2)
 void getSquareOfMatrixIfSymmetric(matrix *m) {
     if(isSymmetricMatrix(m)){
     matrix temp = mulMatrices(*m, *m);
@@ -129,7 +129,7 @@ void getSquareOfMatrixIfSymmetric(matrix *m) {
     *m = temp;
     }
 }
-
+//тесты
 void Lab16_task4(matrix *m) {
     getSquareOfMatrixIfSymmetric(m);
 }
@@ -150,7 +150,7 @@ void test_Lab16_task4() {
     freeMemMatrix(&m);
     freeMemMatrix(&m_test);
 }
-
+//Задание 5 (1)
 bool isUnique(long long *a, int n) {
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
@@ -160,7 +160,8 @@ bool isUnique(long long *a, int n) {
     }
     return true;
 }
-//getSum из библиотеки
+//Задание 5 (2)
+//getSum из библиотеки matrix lab 15:
 /*long long getSum(int *a, int n) {
     int sum = 0;
     for (int i = 0; i < n; i++) {
@@ -168,7 +169,7 @@ bool isUnique(long long *a, int n) {
     }
     return sum;
 }*/
-
+//Задание 5 (3)
 void transposeIfMatrixHasNotEqualSumOfRows(matrix *m) {
     long long temp_sum[m->nRows];
     for (int i = 0; i < m->nRows; i++) {
@@ -178,7 +179,7 @@ void transposeIfMatrixHasNotEqualSumOfRows(matrix *m) {
     if (isUnique(temp_sum, m->nRows))
         transposeSquareMatrix(m);
 }
-
+//тесты
 void Lab16_task5(matrix *m) {
     transposeIfMatrixHasNotEqualSumOfRows(m);
 }
@@ -200,7 +201,7 @@ void test_Lab16_task5() {
     freeMemMatrix(&m);
     freeMemMatrix(&m_test);
 }
-
+//Задание 6 (а)
 bool isMutuallyInverseMatrices(matrix m1, matrix m2) {
     if (m1.nCols != m2.nCols || m1.nRows != m2.nRows)
         return false;
@@ -209,7 +210,7 @@ bool isMutuallyInverseMatrices(matrix m1, matrix m2) {
         return isEMatrix(&mul_m);
     }
 }
-
+//тесты
 bool Lab16_task6(matrix m1, matrix m2) {
     return isMutuallyInverseMatrices(m1, m2);
 }
@@ -229,11 +230,11 @@ void test_Lab16_task6() {
     freeMemMatrix(&m1);
     freeMemMatrix(&m2);
 }
-
+//Задание 7 (а)
 int max(int a, int b){
     return a > b ? a : b;
 }
-
+//Задание 7 (b)
 long long findSumOfMaxesOfPseudoDiagonal(matrix m) {
     long long max_sum_S = 0;
     int max_number = 0;
@@ -261,7 +262,7 @@ long long findSumOfMaxesOfPseudoDiagonal(matrix m) {
     }
     return max_sum_S;
 }
-
+//тесты
 long long Lab16_task7(matrix m) {
     return findSumOfMaxesOfPseudoDiagonal(m);
 }
@@ -276,7 +277,7 @@ void test_Lab16_task7() {
     assert(Lab16_task7(m) == 20);
     freeMemMatrix(&m);
 }
-
+//Задание 8 (a)
 int getMinInArea(matrix m) {
     position max_pos = getMaxValuePos(m);
 
@@ -320,7 +321,7 @@ int getMinInArea(matrix m) {
 
     return min;
 }
-
+//тесты
 int Lab16_task8(matrix m) {
     return getMinInArea(m);
 }
@@ -335,7 +336,7 @@ void test_Lab16_task8() {
     assert(Lab16_task8(m) == 6);
     freeMemMatrix(&m);
 }
-
+//Задание 9 (1)
 float getDistance(int *a, int n) {
 
     float dist = 0;
@@ -345,7 +346,7 @@ float getDistance(int *a, int n) {
     dist = sqrt(dist);
     return dist;
 }
-
+//Задание 9 (2)
 void insertionSortRowsMatrixByRowCriteriaF(matrix *m,
                                            float (*criteria)(int *, int)) {
     float temp[m->nRows];
@@ -370,12 +371,11 @@ void insertionSortRowsMatrixByRowCriteriaF(matrix *m,
         }
     }
 }
-
+//Задание 9 (3)
 void sortByDistances(matrix *m) {
     insertionSortRowsMatrixByRowCriteriaF(m, getDistance);
 }
-
-
+//тесты
 void Lab16_task9(matrix *m) {
     sortByDistances(m);
 }
@@ -397,7 +397,7 @@ void test_Lab16_task9() {
     freeMemMatrix(&m);
     freeMemMatrix(&m_test);
 }
-
+//Задание 10 (a)
 int cmp_long_long(const void *pa, const void *pb) {
 
     if (*(long long int *) pa - *(long long int *) pb < 0)
@@ -406,7 +406,7 @@ int cmp_long_long(const void *pa, const void *pb) {
         return 1;
     return 0;
 }
-
+//Задание 10 (b)
 int countNUnique(long long *a, int n) {
     int count = 0;
     int is_unique = 0;
@@ -419,6 +419,7 @@ int countNUnique(long long *a, int n) {
     }
     return count;
 }
+//Задание 10 (c)
 int countEqClassesByRowsSum(matrix m) {
     long long temp[m.nRows];
     for (int i = 0; i < m.nRows; i++) {
@@ -429,16 +430,16 @@ int countEqClassesByRowsSum(matrix m) {
 
     return countNUnique(temp, m.nRows);
 }
-
+//тесты
 int Lab16_task10(matrix m) {
     return countEqClassesByRowsSum(m);
 }
 
 void test_Lab16_task10() {
-    matrix m = createMatrixFromArray((int[]) {7, 1,//8
-                                              2, 7,//9
+    matrix m = createMatrixFromArray((int[]) {7, 1,//8 (1)
+                                              2, 7,//9 (2)
                                               5, 4,//9
-                                              4, 3,//7
+                                              4, 3,//7 (3)
                                               1, 6,//7
                                               8, 0},//8
                                      6, 2);
@@ -446,7 +447,50 @@ void test_Lab16_task10() {
     assert(Lab16_task10(m) == 3);
     freeMemMatrix(&m);
 }
+//Задание 11 (a)
+int getNSpecialElement(matrix m) {
 
+    int sum;
+    int max;
+    int counter = 0;
+
+    for (int i = 0; i < m.nCols; i++) {
+        max = m.values[0][i];
+        sum = max;
+        for (int j = 1; j < m.nRows; j++) {
+
+            if(max > m.values[j][i]) {
+                max = max;
+            } else {
+                max = m.values[j][i];
+            }
+
+            sum += m.values[j][i];
+        }
+
+        sum -= max;
+
+        if(sum < max) {
+            counter = counter + 1;
+        } else {
+            counter = counter;
+        }
+    }
+    return counter;
+}
+//тесты
+int Lab16_task11(matrix m) {
+    return getNSpecialElement(m);
+}
+void test_Lab16_task11() {
+    matrix m = createMatrixFromArray((int[]) {
+        3, 5, 5, 4,
+        2, 3, 6, 7,
+        12, 2, 1, 2},
+                                     3, 4);
+    assert(Lab16_task11(m) == 2);
+    freeMemMatrix(&m);
+}
 
 int main() {
     //test_Lab16_task1();
@@ -458,5 +502,6 @@ int main() {
     //test_Lab16_task7();
     //test_Lab16_task8();
     //test_Lab16_task9();
-    test_Lab16_task10();
+    //test_Lab16_task10();
+    test_Lab16_task11();
 }
