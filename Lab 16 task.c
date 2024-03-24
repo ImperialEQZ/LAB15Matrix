@@ -573,6 +573,82 @@ void test_Lab16_task13() {
 
     freeMemMatrices(ms, 4);
 }
+//из лаб 15 Задание 14 (a)
+/*int countValues(const int *a, int n, int value) {
+    int count = 0;
+    for (size_t i = 0; i < n; i++) {
+        if (a[i] == value) {
+            ++count;
+        }
+    }
+
+    return count;
+}*/
+//из лаб 15 Задание 14 (b)
+/*int countZeroRows(matrix m) {
+    int result = 0;
+    for (size_t i = 0; i < m.nRows; i++) {
+        int count = countValues(m.values[i], m.nCols, 0);
+//Если количество найденных нулевых элементов = общему количеству столбцов в матрице, то увеличивается result
+        if (count == m.nCols)
+            ++result;
+    }
+
+    return result;
+}*/
+//Задание 14 (c)
+void printMatrixWithMaxZeroRows(matrix *ms, int nMatrix) {
+
+    int arr_count[nMatrix];
+
+    int max;
+    int count;
+
+    for (int i = 0; i < nMatrix; i++) {
+        count = countZeroRows(ms[i]);
+        max = max > count ? max : count;
+        arr_count[i] = count;
+    }
+    for (int i = 0; i < nMatrix; ++i) {
+        if (arr_count[i] == max)
+            outputMatrix(ms[i]);
+    }
+}
+//тесты
+int Lab16_task14(matrix m) {
+    return countZeroRows(m);
+}
+void test_Lab16_task14() {
+    matrix *ms = createArrayOfMatrixFromArray((int[]) {
+//Пример с пособия
+        //1 матрица
+        0, 1,
+        1, 0,
+        0, 0,//ряд 0, в сумме 1
+        //2 матрица
+        1, 1,//нет 0
+        2, 1,
+        1, 1,
+        //3 матрица
+        0, 0,//ряд 0
+        0, 0,//ряд 0
+        4, 7,//в сумме 2
+        //4 матрица
+        0, 0,//ряд 0
+        0, 1,
+        0, 0,//ряд 0, в сумме 2
+        //5 матрица
+        0, 1,//нет 0
+        0, 2,
+        0, 3},
+                                              5, 3, 2);
+    assert(Lab16_task14(ms[0]) == 1);
+    assert(Lab16_task14(ms[1]) == 0);
+    assert(Lab16_task14(ms[2]) == 2);
+    assert(Lab16_task14(ms[3]) == 2);
+    assert(Lab16_task14(ms[4]) == 0);
+    freeMemMatrices(ms, 5);
+}
 
 void test_lab16() {
     //test_Lab16_task1();
@@ -587,7 +663,8 @@ void test_lab16() {
     //test_Lab16_task10();
     //test_Lab16_task11();
     //test_Lab16_task12();
-    test_Lab16_task13();
+    //test_Lab16_task13();
+    test_Lab16_task14();
 }
 
 int main() {
