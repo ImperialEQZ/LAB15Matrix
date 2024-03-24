@@ -398,6 +398,56 @@ void test_Lab16_task9() {
     freeMemMatrix(&m_test);
 }
 
+int cmp_long_long(const void *pa, const void *pb) {
+
+    if (*(long long int *) pa - *(long long int *) pb < 0)
+        return -1;
+    if (*(long long int *) pa - *(long long int *) pb > 0)
+        return 1;
+    return 0;
+}
+
+int countNUnique(long long *a, int n) {
+    int count = 0;
+    int is_unique = 0;
+    for (int i = 0; i < n - 1; i++) {
+        if (!is_unique && a[i] == a[i + 1]) {
+            count += 1;
+            is_unique = 1;
+        } else
+            is_unique = 0;
+    }
+    return count;
+}
+int countEqClassesByRowsSum(matrix m) {
+    long long temp[m.nRows];
+    for (int i = 0; i < m.nRows; i++) {
+        temp[i] = getSum(m.values[i], m.nCols);
+    }
+
+    qsort(temp, m.nRows, sizeof(long long int), cmp_long_long);
+
+    return countNUnique(temp, m.nRows);
+}
+
+int Lab16_task10(matrix m) {
+    return countEqClassesByRowsSum(m);
+}
+
+void test_Lab16_task10() {
+    matrix m = createMatrixFromArray((int[]) {7, 1,//8
+                                              2, 7,//9
+                                              5, 4,//9
+                                              4, 3,//7
+                                              1, 6,//7
+                                              8, 0},//8
+                                     6, 2);
+//кол-во уникальных строк, с одинаковой суммой
+    assert(Lab16_task10(m) == 3);
+    freeMemMatrix(&m);
+}
+
+
 int main() {
     //test_Lab16_task1();
     //test_Lab16_task2();
@@ -407,5 +457,6 @@ int main() {
     //test_Lab16_task6();
     //test_Lab16_task7();
     //test_Lab16_task8();
-    test_Lab16_task9();
+    //test_Lab16_task9();
+    test_Lab16_task10();
 }
