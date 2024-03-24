@@ -527,6 +527,52 @@ void test_Lab16_task12() {
     freeMemMatrix(&m);
     freeMemMatrix(&m_test);
 }
+//Задание 13 (a)
+bool isNonDescendingSorted(int *a, int n) {
+    for (int i = 0; i < n - 1; i++)
+        if (a[i] > a[i + 1])
+            return false;
+    return true;
+}
+//Задание 13 (b)
+bool hasAllNonDescendingRows(matrix m) {
+    for (int i = 0; i < m.nRows; i++)
+        if (!isNonDescendingSorted(m.values[i], m.nCols))
+            return false;
+    return true;
+}
+//Задание 13 (c)
+int countNonDescendingRowsMatrices(matrix *ms, int nMatrix) {
+    int count = 0;
+    for (int i = 0; i < nMatrix; i++)
+        if (hasAllNonDescendingRows(ms[i]))
+            count++;
+    return count;
+}
+//тесты
+int Lab16_task13(matrix *ms, int nMatrix) {
+    countNonDescendingRowsMatrices(ms, nMatrix);
+}
+
+void test_Lab16_task13() {
+    matrix *ms = createArrayOfMatrixFromArray((int[]) {
+        //1 матрица
+        7, 1,
+        1, 1,
+        //2 матрица
+        1, 6,
+        2, 2,
+        //3 матрица
+        5, 4,
+        2, 3,
+        //4 матрица
+        1, 3,
+        7, 9},
+                                              4, 2, 2);
+    assert(Lab16_task13(ms, 4) == 2);
+
+    freeMemMatrices(ms, 4);
+}
 
 void test_lab16() {
     //test_Lab16_task1();
@@ -540,7 +586,8 @@ void test_lab16() {
     //test_Lab16_task9();
     //test_Lab16_task10();
     //test_Lab16_task11();
-    test_Lab16_task12();
+    //test_Lab16_task12();
+    test_Lab16_task13();
 }
 
 int main() {
