@@ -649,6 +649,48 @@ void test_Lab16_task14() {
     assert(Lab16_task14(ms[4]) == 0);
     freeMemMatrices(ms, 5);
 }
+//Задание 15
+void Lab16_task15(matrix *ms, int nMatrix) {
+    int temp_mem[nMatrix];
+    int abs;
+    int max = 0;
+    for (int i = 0; i < nMatrix; i++) {
+        for (int j = 0; j < ms->nRows; j++)
+            for (int k = 0; k < ms->nCols; k++) {
+                abs = ms[i].values[j][k] > 0 ? ms[i].values[j][k] :
+                      -1 * ms[i].values[j][k];
+                max = max > abs ? max : abs;
+            }
+        temp_mem[i] = max;
+        max = 0;
+    }
+
+    int min = temp_mem[0];
+    for (int i = 1; i < nMatrix; i++)
+        min = min < temp_mem[i] ? min : temp_mem[i];
+    for (int i = 0; i < nMatrix; i++)
+        if (temp_mem[i] == min)
+            outputMatrix(ms[i]);
+}
+void test_Lab16_task15() {
+    matrix *ms = createArrayOfMatrixFromArray((int[]) {
+        //1 матрица
+        10, -15,
+        20, 30,
+        //2 матрица
+        5, -40,
+        -70, 32,
+        //3 матрица
+        2, 3,
+        7, 15,
+        //4 матрица
+        1, -5,
+        8, 25},
+                                              4, 2, 2);
+    Lab16_task15(ms, 4);
+    assert(42 == 42);
+    freeMemMatrices(ms, 4);
+}
 
 void test_lab16() {
     //test_Lab16_task1();
@@ -664,7 +706,9 @@ void test_lab16() {
     //test_Lab16_task11();
     //test_Lab16_task12();
     //test_Lab16_task13();
-    test_Lab16_task14();
+    //test_Lab16_task14();
+    test_Lab16_task15();
+
 }
 
 int main() {
