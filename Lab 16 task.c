@@ -491,8 +491,44 @@ void test_Lab16_task11() {
     assert(Lab16_task11(m) == 2);
     freeMemMatrix(&m);
 }
+//Задание 12 (a)
+position getLeftMin(matrix m) {
+    return getMinValuePos(m);
+}
+//Задание 12 (b)
+void swapPenultimateRow(matrix *m, int n) {
+    if (isSquareMatrix(m)) {
+        for (int i = m->nRows - 1; i >= 0; i--)
+            m->values[m->nRows - 2][i] = m->values[i][n];
+    }
+}
 
-int main() {
+void Lab16_task12(matrix *m, int n) {
+    swapPenultimateRow(m, n);
+}
+void test_Lab16_task12() {
+//Пример из пособия
+    matrix m = createMatrixFromArray((int[]) {
+        1, 2, 3,
+        4, 5, 6,
+        7, 8, 1},
+                                     3, 3);
+
+    Lab16_task12(&m, getLeftMin(m).colIndex);
+
+    matrix m_test = createMatrixFromArray((int[]) {
+        1, 2, 3,
+        1, 4, 7,
+        7, 8, 1},
+                                          3, 3);
+
+    assert(areTwoMatricesEqual(&m, &m_test));
+
+    freeMemMatrix(&m);
+    freeMemMatrix(&m_test);
+}
+
+void test_lab16() {
     //test_Lab16_task1();
     //test_Lab16_task2();
     //test_Lab16_task3();
@@ -503,5 +539,11 @@ int main() {
     //test_Lab16_task8();
     //test_Lab16_task9();
     //test_Lab16_task10();
-    test_Lab16_task11();
+    //test_Lab16_task11();
+    test_Lab16_task12();
+}
+
+int main() {
+
+    test_lab16();
 }
