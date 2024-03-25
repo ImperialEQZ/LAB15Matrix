@@ -502,7 +502,7 @@ void swapPenultimateRow(matrix *m, int n) {
             m->values[m->nRows - 2][i] = m->values[i][n];
     }
 }
-
+//тесты
 void Lab16_task12(matrix *m, int n) {
     swapPenultimateRow(m, n);
 }
@@ -573,7 +573,7 @@ void test_Lab16_task13() {
 
     freeMemMatrices(ms, 4);
 }
-//из лаб 15 Задание 14 (a)
+//из лаб 15. Задание 14 (a)
 /*int countValues(const int *a, int n, int value) {
     int count = 0;
     for (size_t i = 0; i < n; i++) {
@@ -584,7 +584,7 @@ void test_Lab16_task13() {
 
     return count;
 }*/
-//из лаб 15 Задание 14 (b)
+//из лаб 15. Задание 14 (b)
 /*int countZeroRows(matrix m) {
     int result = 0;
     for (size_t i = 0; i < m.nRows; i++) {
@@ -672,6 +672,7 @@ void Lab16_task15(matrix *ms, int nMatrix) {
         if (temp_mem[i] == min)
             outputMatrix(ms[i]);
 }
+//тесты
 void test_Lab16_task15() {
     matrix *ms = createArrayOfMatrixFromArray((int[]) {
         //1 матрица
@@ -693,22 +694,21 @@ void test_Lab16_task15() {
 }
 
 void test_lab16() {
-    //test_Lab16_task1();
-    //test_Lab16_task2();
-    //test_Lab16_task3();
-    //test_Lab16_task4();
-    //test_Lab16_task5();
-    //test_Lab16_task6();
-    //test_Lab16_task7();
-    //test_Lab16_task8();
-    //test_Lab16_task9();
-    //test_Lab16_task10();
-    //test_Lab16_task11();
-    //test_Lab16_task12();
-    //test_Lab16_task13();
-    //test_Lab16_task14();
+    test_Lab16_task1();
+    test_Lab16_task2();
+    test_Lab16_task3();
+    test_Lab16_task4();
+    test_Lab16_task5();
+    test_Lab16_task6();
+    test_Lab16_task7();
+    test_Lab16_task8();
+    test_Lab16_task9();
+    test_Lab16_task10();
+    test_Lab16_task11();
+    test_Lab16_task12();
+    test_Lab16_task13();
+    test_Lab16_task14();
     test_Lab16_task15();
-
 }
 
 int main() {
